@@ -1,0 +1,130 @@
+<!--
+ * @Author: wendy-web wendywen@tencent.com
+ * @Date: 2021-11-17 13:36:58
+ * @LastEditors: wendy-web wendywen@tencent.com
+ * @LastEditTime: 2022-10-28 11:48:26
+ * @FilePath: /源码/7_extract-common/src/index.html
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>index page</title>
+  <style>
+    .json__img {
+      width: 100px;
+    }
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    .ul__box {
+      background: gray;
+      text-align: justify;
+      width: 456px;
+      border-bottom: 1px dashed #ccc;
+      text-align: justify;
+      font-size: 0;
+    }
+    /*如何要兼容 ie7就不要用伪元素，用dom元素代替*/
+    .ul__box:before {
+      content: "";
+      display: inline-block;
+      height: 100%;
+      /*通过这个伪元素前面的幽灵节点，实现底部对齐*/
+    }
+    .ul__box:after {
+      content: "";
+      display: inline-block;
+      width: 100%;
+      /*这个为满足text-align:justify要超过一行的要求*/
+    }
+    .ul__box li {
+      display: inline-block;
+      width: 50px;
+      height: 20px;
+      background: pink;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    0000{{message}}
+  </div>
+  <hr>
+  <div id="index">
+    我是 index
+    <p>json-server的静态资源的图片地址使用</p>
+    <img class="json__img" src="http://localhost:3000/images/demo.png" alt="json-server的图片地址">
+    <br>
+    <button id="putData">postData 增加数据</button>
+    <br>
+    <button id="updataData">updataData 更新去查看数据的变化</button>
+    <br>
+    <hr>
+    <button id="fastData">访问fastMock生成的地址</button>
+    <p>不使用flex，中间自适应的布局</p>
+    <ul class="ul__box"><li>ffff</li>
+      <li>ffff</li>
+      <li>ffff</li>
+      <li>ffff</li>
+      <li>ffff</li>
+      <li>ffff</li>
+    </ul>
+    <hr>
+    <p>blob对象； --- 文件的下载/图片的预览</p>
+    <a download >a标签的download是同源即可下载 </a>
+    <br>
+    <a href="" id="btn">下载的a标签</a>
+    <p>input选择文件的下载</p>
+    <input type="file" id="input" />
+    <script type="module">
+      console.log("blob的使用--------");
+      // 俩个参数，第一个是数组
+      const str = `
+        <div>feeee</div>
+      `;
+      const blob = new Blob([str], {
+          type: 'text/html'
+      });
+      console.log(blob.text());
+      // 点击下载a标签
+      btn.onclick = function(e) {
+        this.setAttribute('download', '123.html');
+        this.href = URL.createObjectURL(blob)
+      }
+      input.onchange = function(e) {
+        const file = e.target.files[0]; // 继承在load的对象
+        console.log(file, "---file");
+        
+        // 创建一个a的标签进行下载
+        // const a = document.createElement('a');
+        // a.setAttribute('download', 'mybaidu.html');
+        // a.href = URL.createObjectURL(file);
+        // a.click();
+
+        // 创建下载的图片; 同步的方式进行
+        // const img = new Image();
+        // img.src = URL.createObjectURL(file);
+
+        const img = new Image();
+        const fileRead = new FileReader();
+        fileRead.onload = function() {
+          img.src = fileRead.result;
+        }
+        fileRead.readAsDataURL(file);
+        document.body.appendChild(img);
+
+      }
+    </script>
+    <hr>
+    <p>实现切片上传</p>
+    <input type="file" id="inputUplad">
+    <button id="uploadBtn">切片上传</button>
+    
+  </div>
+</body>
+</html>
